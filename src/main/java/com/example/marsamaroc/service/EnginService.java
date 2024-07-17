@@ -2,7 +2,6 @@ package com.example.marsamaroc.service;
 
 import com.example.marsamaroc.dao.entities.Engin;
 import com.example.marsamaroc.dao.repositories.EnginRepository;
-import com.example.marsamaroc.service.EnginManager;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +25,7 @@ public class EnginService implements EnginManager {
     public Engin addEngin(Engin engin) {
         return enginRepository.save(engin);
     }
+
     @Override
     public Engin updateEngin(Engin enginDetails, Long id) {
         Optional<Engin> optionalEngin = enginRepository.findById(id);
@@ -69,4 +69,3 @@ public class EnginService implements EnginManager {
         return enginRepository.save(engin);
     }
 }
-
