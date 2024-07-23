@@ -1,5 +1,6 @@
 package com.example.marsamaroc.dao.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +18,15 @@ public class CategorieEngin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Override
+    public String toString() {
+        return "CategorieEngin{" +
+                "id=" + id +
+                ", nom='" + nom + '\'' +
+                ", engins=" + engins +
+                '}';
+    }
 
     private String nom;
 

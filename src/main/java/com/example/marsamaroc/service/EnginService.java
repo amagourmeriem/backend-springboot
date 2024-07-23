@@ -1,7 +1,10 @@
 package com.example.marsamaroc.service;
 
+import com.example.marsamaroc.controllers.EnginController;
 import com.example.marsamaroc.dao.entities.Engin;
 import com.example.marsamaroc.dao.repositories.EnginRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,16 +14,16 @@ import java.util.Optional;
 public class EnginService implements EnginManager {
 
     private final EnginRepository enginRepository;
+    private static final Logger logger = LoggerFactory.getLogger(EnginController.class);
+
 
     public EnginService(EnginRepository enginRepository) {
         this.enginRepository = enginRepository;
     }
 
-    @Override
     public List<Engin> getAllEngins() {
         return enginRepository.findAll();
     }
-
     @Override
     public Engin addEngin(Engin engin) {
         return enginRepository.save(engin);

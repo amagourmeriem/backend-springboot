@@ -1,5 +1,6 @@
 package com.example.marsamaroc.dao.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -64,7 +65,32 @@ public class Engin {
     @Column(name = "observations_generales")
     private String observationsGenerales;
 
-    @ManyToOne
+    @Override
+    public String toString() {
+        return "Engin{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", matricule='" + matricule + '\'' +
+                ", compteurHoraire=" + compteurHoraire +
+                ", etatFrein='" + etatFrein + '\'' +
+                ", etatBatterie='" + etatBatterie + '\'' +
+                ", etatEclairage='" + etatEclairage + '\'' +
+                ", etatEssuieGlace='" + etatEssuieGlace + '\'' +
+                ", etatTracteur='" + etatTracteur + '\'' +
+                ", etatPneumatique='" + etatPneumatique + '\'' +
+                ", etatTransmission='" + etatTransmission + '\'' +
+                ", etatFreinService='" + etatFreinService + '\'' +
+                ", etatFreinParking='" + etatFreinParking + '\'' +
+                ", etatKlaxon='" + etatKlaxon + '\'' +
+                ", etatCablage='" + etatCablage + '\'' +
+                ", etatVitesse='" + etatVitesse + '\'' +
+                ", observationsGenerales='" + observationsGenerales + '\'' +
+                ", categorieEngin=" + (categorieEngin != null ? categorieEngin.getNom() : "null") +
+                '}';
+    }
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categorie_engin_id")
+    @JsonIgnore
     private CategorieEngin categorieEngin;
+
 }
