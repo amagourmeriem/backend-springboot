@@ -29,10 +29,13 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(HttpMethod.POST, "/login", "/register").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/messages").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/engins/uploads/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/engins/uploads/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/engins/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/engins/**").authenticated()
-                        .anyRequest().authenticated());
+                        .anyRequest().authenticated()
+                ).csrf(csrf -> csrf.disable());;
         return http.build();
     }
 }

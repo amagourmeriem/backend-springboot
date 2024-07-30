@@ -23,9 +23,16 @@ public class UserAuthenticationEntryPoint implements AuthenticationEntryPoint {
             HttpServletRequest request,
             HttpServletResponse response,
             AuthenticationException authException) throws IOException, ServletException {
+        String requestUri = request.getRequestURI();
+        if (requestUri.startsWith("/uploads/")) {
+            // Allow the request to proceed
+            response.setStatus(HttpServletResponse.SC_OK);
+            return;
+        }
+
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         response.setHeader(HttpHeaders.WWW_AUTHENTICATE, "Bearer realm=\"access to protected resource\", error=\"unauthorized\", error_description=\"Full authentication is required to access this resource\"");
-        OBJECT_MAPPER.writeValue(response.getOutputStream(), new ErrorDto("Unauthorized path"));
+        OBJECT_MAPPER.writeValue(response.getOutputStream(), new ErrorDto("Unauthorized"));
     }
 }

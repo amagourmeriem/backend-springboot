@@ -50,6 +50,7 @@ public class EnginService implements EnginManager {
             engin.setEtatCablage(enginDetails.getEtatCablage());
             engin.setEtatVitesse(enginDetails.getEtatVitesse());
             engin.setObservationsGenerales(enginDetails.getObservationsGenerales());
+            engin.setImage(enginDetails.getImage());
             engin.setCategorieEngin(enginDetails.getCategorieEngin());
             return enginRepository.save(engin);
         } else {

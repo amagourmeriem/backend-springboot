@@ -18,23 +18,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final UserAuthenticationProvider userAuthenticationProvider;
 
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest httpServletRequest,
-            HttpServletResponse httpServletResponse,
-            FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String header = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (header != null) {
             String[] authElements = header.split(" ");
 
-            if (authElements.length == 2
-                    && "Bearer".equals(authElements[0])) {
+            if (authElements.length == 2 && "Bearer".equals(authElements[0])) {
                 try {
                     SecurityContextHolder.getContext().setAuthentication(
                             userAuthenticationProvider.validateToken(authElements[1]));
+                    System.out.println("Token validated successfully.");
                 } catch (RuntimeException e) {
                     SecurityContextHolder.clearContext();
-                    throw e;
+                    System.err.println("Token validation failed: " + e.getMessage());
+                    httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized path");
+                    return;
                 }
             }
         }

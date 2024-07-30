@@ -24,7 +24,7 @@ public class Engin {
     private String matricule;
 
     @Column(name = "compteur_horaire")
-    private int compteurHoraire;
+    private String compteurHoraire;
 
     @Column(name = "etat_frein")
     private String etatFrein;
@@ -65,13 +65,17 @@ public class Engin {
     @Column(name = "observations_generales")
     private String observationsGenerales;
 
+    @Column(name = "image")
+    private String image;
+
+
     @Override
     public String toString() {
         return "Engin{" +
                 "id=" + id +
                 ", code='" + code + '\'' +
                 ", matricule='" + matricule + '\'' +
-                ", compteurHoraire=" + compteurHoraire +
+                ", compteurHoraire='" + compteurHoraire + '\'' +
                 ", etatFrein='" + etatFrein + '\'' +
                 ", etatBatterie='" + etatBatterie + '\'' +
                 ", etatEclairage='" + etatEclairage + '\'' +
@@ -85,12 +89,14 @@ public class Engin {
                 ", etatCablage='" + etatCablage + '\'' +
                 ", etatVitesse='" + etatVitesse + '\'' +
                 ", observationsGenerales='" + observationsGenerales + '\'' +
-                ", categorieEngin=" + (categorieEngin != null ? categorieEngin.getNom() : "null") +
+                ", image='" + image + '\'' +
+                ", categorieEngin=" + categorieEngin +
                 '}';
     }
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categorie_engin_id")
-    @JsonIgnore
     private CategorieEngin categorieEngin;
-
+    public void setCategorieEnginId(String categorieEnginId) {
+    }
 }
