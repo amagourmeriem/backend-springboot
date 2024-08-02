@@ -1,13 +1,13 @@
+// src/main/java/com/example/marsamaroc/controllers/CategoryEnginController.java
 package com.example.marsamaroc.controllers;
 
-import com.example.marsamaroc.dao.entities.CategorieEngin;
+import com.example.marsamaroc.dtos.CategorieEnginDTO;
 import com.example.marsamaroc.service.CategoryEnginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin("http://localhost:3000") // Allowing client application to consume the backend
 @RestController
@@ -18,27 +18,20 @@ public class CategoryEnginController {
     private final CategoryEnginService categoryEnginService;
 
     @GetMapping
-    public ResponseEntity<List<CategorieEngin>> getAllCategories() {
-        List<CategorieEngin> categories = categoryEnginService.getAllCategories();
+    public ResponseEntity<List<CategorieEnginDTO>> getAllCategories() {
+        List<CategorieEnginDTO> categories = categoryEnginService.getAllCategories();
         return ResponseEntity.ok(categories);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CategorieEngin> getCategoryById(@PathVariable Long id) {
-        Optional<CategorieEngin> category = categoryEnginService.getCategoryById(id);
-        return category.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
     @PostMapping
-    public ResponseEntity<CategorieEngin> addCategory(@RequestBody CategorieEngin category) {
-        CategorieEngin createdCategory = categoryEnginService.addCategory(category);
+    public ResponseEntity<CategorieEnginDTO> addCategory(@RequestBody CategorieEnginDTO category) {
+        CategorieEnginDTO createdCategory = categoryEnginService.addCategory(category);
         return ResponseEntity.ok(createdCategory);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategorieEngin> updateCategory(@RequestBody CategorieEngin category, @PathVariable Long id) {
-        CategorieEngin updatedCategory = categoryEnginService.updateCategory(category, id);
+    public ResponseEntity<CategorieEnginDTO> updateCategory(@PathVariable Long id, @RequestBody CategorieEnginDTO category) {
+        CategorieEnginDTO updatedCategory = categoryEnginService.updateCategory(id, category);
         return ResponseEntity.ok(updatedCategory);
     }
 

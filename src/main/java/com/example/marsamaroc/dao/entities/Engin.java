@@ -1,10 +1,13 @@
 package com.example.marsamaroc.dao.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -97,6 +100,10 @@ public class Engin {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categorie_engin_id")
     private CategorieEngin categorieEngin;
+
+    @OneToOne(mappedBy = "engin", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Demande demande;
+
     public void setCategorieEnginId(String categorieEnginId) {
     }
 }

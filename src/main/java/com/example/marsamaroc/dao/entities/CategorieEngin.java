@@ -1,6 +1,8 @@
 package com.example.marsamaroc.dao.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,11 +27,18 @@ public class CategorieEngin {
                 "id=" + id +
                 ", nom='" + nom + '\'' +
                 ", engins=" + engins +
+                ", nbrEngin=" + nbrEngin +
                 '}';
     }
 
     private String nom;
 
+    private int nbrEngin;
+
     @OneToMany(mappedBy = "categorieEngin")
     private List<Engin> engins;
+
+    @OneToMany(mappedBy = "categorieEngin")
+    private List<Demande> demandes;
+
 }

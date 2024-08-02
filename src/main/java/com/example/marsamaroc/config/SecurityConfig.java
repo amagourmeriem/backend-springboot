@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final UserAuthenticationEntryPoint userAuthenticationEntryPoint;
+
     private final UserAuthenticationProvider userAuthenticationProvider;
 
     @Bean
@@ -30,12 +31,16 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(HttpMethod.POST, "/login", "/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/engins/uploads/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/engins/uploads/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/engins/uploads/**","/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/engins/**").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/engins/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/engins/**", "/categories_engins/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/engins/**","/categories_engins/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/demandes/**","/engins/update/**","/engins/").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/demandes/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/demandes/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/demandes/**").authenticated()
                         .anyRequest().authenticated()
-                ).csrf(csrf -> csrf.disable());;
+                );
         return http.build();
     }
 }
