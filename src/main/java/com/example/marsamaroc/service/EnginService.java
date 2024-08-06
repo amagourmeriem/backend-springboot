@@ -21,6 +21,7 @@ public class EnginService {
     private final EnginRepository enginRepository;
     private final CategoryEnginRepository categoryEnginRepository;
 
+
     public EnginDto addEngin(EnginDto enginDto) {
         // Convertir le DTO en entité
         Engin engin = convertToEntity(enginDto);
@@ -117,6 +118,9 @@ public class EnginService {
         enginRepository.deleteById(id);
     }
 
+    public Engin findById(Long id) {
+        return enginRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Engin not found for id: " + id));
+    }
 
     public EnginDto convertToDto(Engin engin) {
         EnginDto dto = new EnginDto();

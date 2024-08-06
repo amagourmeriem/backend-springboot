@@ -23,6 +23,9 @@ public class CategoryEnginService {
                 .map(CategorieEnginMapper::toDTO)
                 .collect(Collectors.toList());
     }
+    public CategorieEngin findById(Long id) {
+        return categoryEnginRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("CategorieEngin not found for id: " + id));
+    }
 
     public CategorieEnginDTO addCategory(CategorieEnginDTO categorieEnginDTO) {
         CategorieEngin categorieEngin = new CategorieEngin();

@@ -1,5 +1,6 @@
 package com.example.marsamaroc.config;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +25,10 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/engins/uploads/**")
                 .addResourceLocations("file:uploads/");
     }
-
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

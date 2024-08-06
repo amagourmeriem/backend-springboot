@@ -53,4 +53,9 @@ public class Demande {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "engin_id")
     private Engin engin;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Status status= Status.PENDING;
 }
+

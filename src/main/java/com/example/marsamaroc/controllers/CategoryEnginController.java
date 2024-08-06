@@ -1,4 +1,3 @@
-// src/main/java/com/example/marsamaroc/controllers/CategoryEnginController.java
 package com.example.marsamaroc.controllers;
 
 import com.example.marsamaroc.dtos.CategorieEnginDTO;

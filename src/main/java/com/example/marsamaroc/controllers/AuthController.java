@@ -8,9 +8,7 @@ import com.example.marsamaroc.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
@@ -33,6 +31,14 @@ public class AuthController {
         UserDto createdUser = userService.register(user);
         createdUser.setToken(userAuthenticationProvider.createToken(user.getLogin()));
         return ResponseEntity.created(URI.create("/users/" + createdUser.getId())).body(createdUser);
+    }
+
+
+    @GetMapping("/find/{login}")
+    public ResponseEntity<UserDto> getUserByLogin(@PathVariable String login) {
+        System.out.println("Appel à getUserByLogin avec le login: " + login);
+        UserDto userDto = userService.findUserDtoByLogin(login);
+        return ResponseEntity.ok(userDto);
     }
 
 }
