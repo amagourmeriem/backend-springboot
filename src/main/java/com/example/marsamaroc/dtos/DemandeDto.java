@@ -1,13 +1,13 @@
 package com.example.marsamaroc.dtos;
 
-import com.example.marsamaroc.dao.entities.CategorieEngin;
-import com.example.marsamaroc.dao.entities.Demande;
 import com.example.marsamaroc.dao.entities.Status;
-import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 
-@Data
+@Setter
+@Getter
 public class DemandeDto {
     private Long id;
     private String numeroBCI;
@@ -17,13 +17,15 @@ public class DemandeDto {
     private String shift;
     private String saul;
     private String observations;
-    private Long categorieEnginId; // Utiliser l'ID de l'engin
-    private Status status = Status.PENDING;
+    private Long categorieEnginId;
     private Long enginId;
-    private UserDto user; // Utiliser UserDto pour représenter l'utilisateur
+    private Status status;
     private Long userId;
     private String login;
-    private EnginDto enginDto;
-    private CategorieEnginDTO categorieEnginDTO; // Utiliser CategorieEnginDTO pour représenter la catégorie d'engin
+    // Ajout du champ login
 
+
+    // Getters et setters
+
+    // Autres getters et setters
 }

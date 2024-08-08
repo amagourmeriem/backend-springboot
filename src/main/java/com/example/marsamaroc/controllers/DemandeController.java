@@ -5,11 +5,16 @@ import com.example.marsamaroc.dao.entities.User;
 import com.example.marsamaroc.dao.repositories.DemandeRepository;
 import com.example.marsamaroc.dao.repositories.UserRepository;
 import com.example.marsamaroc.dtos.DemandeDto;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 import com.example.marsamaroc.service.DemandeManager;
 import com.example.marsamaroc.service.DemandeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,17 +34,47 @@ public class DemandeController {
     private UserRepository userRepository;
 
     // Créer une nouvelle demande
+
+
     @PostMapping
-    public ResponseEntity<DemandeDto> createDemande(@RequestBody DemandeDto demandeDto) {
-        DemandeDto createdDemande = demandeService.createDemande(demandeDto);
-        return new ResponseEntity<>(createdDemande, HttpStatus.CREATED);
+    public ResponseEntity<?> createDemande(@RequestBody DemandeDto demandeDto) {
+        try {
+            Demande createdDemande = demandeService.createDemande(demandeDto);
+            return new ResponseEntity<>(createdDemande, HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
-    // Obtenir toutes les demandes
     @GetMapping
     public ResponseEntity<List<DemandeDto>> getAllDemandes() {
         List<DemandeDto> demandes = demandeService.getAllDemandes();
         return new ResponseEntity<>(demandes, HttpStatus.OK);
+    }
+
+    // Obtenir toutes les demandes
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<DemandeDto>> getDemandesByUser() {
+        // Obtenir l'utilisateur connecté
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loginInfo = authentication.getName();
+        System.out.println("Authentication Name (login): " + loginInfo);
+
+// Extraire l'ID de la chaîne
+        Long userId = extractUserIdFromLoginInfo(loginInfo);
+        System.out.println("User ID: " + userId);
+
+        // Obtenir les demandes pour l'utilisateur connecté
+        List<DemandeDto> demandes = demandeService.getDemandesByUser(userId);
+        return new ResponseEntity<>(demandes, HttpStatus.OK);
+    }
+
+    private Long extractUserIdFromLoginInfo(String loginInfo) {
+        // Rechercher la position de "id="
+        int idStart = loginInfo.indexOf("id=") + 3;
+        int idEnd = loginInfo.indexOf(",", idStart);
+        String idString = loginInfo.substring(idStart, idEnd);
+        return Long.parseLong(idString);
     }
 
     // Obtenir une demande par ID
@@ -62,9 +97,9 @@ public class DemandeController {
         boolean isDeleted = demandeService.deleteDemande(id);
         return isDeleted ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<DemandeDto>> getDemandesByUser(@PathVariable Long userId) {
-        List<DemandeDto> demandes = demandeService.getDemandesByUser(userId);
-        return ResponseEntity.ok(demandes);
-    }
+//    @GetMapping("/user/{userId}")
+//    public ResponseEntity<List<DemandeDto>> getDemandesByUser(@PathVariable Long userId) {
+//        List<DemandeDto> demandes = demandeService.getDemandesByUser(userId);
+//        return ResponseEntity.ok(demandes);
+//    }
 }

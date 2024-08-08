@@ -22,12 +22,11 @@ public class UserDto {
     private Role role;
 
     public UserDto(User user) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.login = login;
-        this.password = password;
-        this.role = role; // Set role as Role object
+        this.id = user.getId(); // Correctly set the ID
+        this.firstName = user.getFirstName(); // Correctly set the first name
+        this.lastName = user.getLastName(); // Correctly set the last name
+        this.login = user.getLogin(); // Correctly set the login
+        this.password = user.getPassword(); // Correctly set the password
+        this.role = user.getRole(); // Correctly set the role
     }
-
 }

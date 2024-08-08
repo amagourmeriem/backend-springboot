@@ -35,7 +35,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/engins/**", "/categories_engins/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/engins/**","/categories_engins/**").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/demandes/**","/engins/update/**","/engins/").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/demandes/**","/engins/update/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/demandes/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/demandes/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/demandes/**").authenticated()

@@ -1,7 +1,5 @@
 package com.example.marsamaroc.service;
 
-
-
 import com.example.marsamaroc.dao.entities.User;
 import com.example.marsamaroc.dtos.SignUpDto;
 import com.example.marsamaroc.dtos.UserDto;
@@ -24,33 +22,46 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
-
     private final UserMapper userMapper;
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
-
     public UserDto login(CredentialsDto credentialsDto) {
+        log.info("Attempting to log in with login: {}", credentialsDto.getLogin());
+
         User user = userRepository.findByLogin(credentialsDto.getLogin())
-                .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> {
+                    log.error("User not found with login: {}", credentialsDto.getLogin());
+                    return new AppException("Unknown user", HttpStatus.NOT_FOUND);
+                });
+
+        log.info("User found: {}", user);
 
         if (passwordEncoder.matches(CharBuffer.wrap(credentialsDto.getPassword()), user.getPassword())) {
+            log.info("Password matches for user: {}", user.getLogin());
             return userMapper.toUserDto(user);
         }
+
+        log.error("Invalid password for user: {}", credentialsDto.getLogin());
         throw new AppException("Invalid password", HttpStatus.BAD_REQUEST);
     }
 
-
     public User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found for id: " + id));
+        log.info("Attempting to find user with ID: {}", id);
+        return userRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.error("User not found with ID: {}", id);
+                    return new IllegalArgumentException("User not found for id: " + id);
+                });
     }
 
     public UserDto register(SignUpDto userDto) {
-        Optional<User> optionalUser = userRepository.findByLogin(userDto.getLogin());
+        log.info("Attempting to register user with login: {}", userDto.getLogin());
 
+        Optional<User> optionalUser = userRepository.findByLogin(userDto.getLogin());
         if (optionalUser.isPresent()) {
+            log.error("Login already exists: {}", userDto.getLogin());
             throw new AppException("Login already exists", HttpStatus.BAD_REQUEST);
         }
 
@@ -58,29 +69,38 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.getPassword())));
 
         User savedUser = userRepository.save(user);
+        log.info("User registered successfully: {}", savedUser);
 
         return userMapper.toUserDto(savedUser);
     }
 
-
-
-
     public UserDto findUserDtoByLogin(String login) {
-        log.info("Recherche de l'utilisateur avec le login: {}", login);
+        log.info("Searching for user with login: {}", login);
+
         Optional<User> userOptional = userRepository.findByLogin(login);
-        User user = userOptional.orElseThrow(() -> new RuntimeException("Unknown user"));
-        log.info("Utilisateur trouvé: {}", user.getLogin());
+        User user = userOptional.orElseThrow(() -> {
+            log.error("User not found with login: {}", login);
+            return new RuntimeException("Unknown user");
+        });
+
+        log.info("User found: {}", user);
         return convertToDto(user);
     }
 
-    public User findByLogin(String login) {
-        log.info("Recherche de l'utilisateur avec le login: {}", login);
-        return userRepository.findByLogin(login)
-                .orElseThrow(() -> new RuntimeException("Unknown user"));
+    public User getUserByLogin(String login) {
+        log.info("Searching for user with login: {}", login);
+
+        User user = userRepository.findByLogin(login)
+                .orElseThrow(() -> {
+                    log.error("User not found with login: {}", login);
+                    return new RuntimeException("User not found");
+                });
+
+        log.info("User found: {}", user);
+        return user;
     }
 
     private UserDto convertToDto(User user) {
         return new UserDto(user.getId(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPassword(), null, user.getRole());
     }
-
-    }
+}

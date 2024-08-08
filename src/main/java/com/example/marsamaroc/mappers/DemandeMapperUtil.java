@@ -5,7 +5,9 @@ import com.example.marsamaroc.dao.repositories.CategoryEnginRepository;
 import com.example.marsamaroc.dao.repositories.DemandeRepository;
 import com.example.marsamaroc.dao.repositories.EnginRepository;
 import com.example.marsamaroc.dao.repositories.UserRepository;
-import com.example.marsamaroc.dtos.*;
+import com.example.marsamaroc.dtos.CategorieEnginDTO;
+import com.example.marsamaroc.dtos.UserDto;
+import com.example.marsamaroc.dtos.DemandeDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,7 +43,9 @@ public class DemandeMapperUtil {
         if (demande == null) {
             return null;
         }
+
         DemandeDto dto = new DemandeDto();
+
         dto.setId(demande.getId());
         dto.setNumeroBCI(demande.getNumeroBCI());
         dto.setNomDepartement(demande.getNomDepartement());
@@ -50,28 +54,34 @@ public class DemandeMapperUtil {
         dto.setShift(demande.getShift());
         dto.setSaul(demande.getSaul());
         dto.setObservations(demande.getObservations());
-        dto.setCategorieEnginId(demande.getCategorieEngin() != null ? demande.getCategorieEngin().getId() : null);
+        dto.setCategorieEnginId(getCategorieEnginId(demande));
         dto.setStatus(demande.getStatus());
-        dto.setEnginId(demande.getEngin() != null ? demande.getEngin().getId() : null);
-        dto.setUserId(demande.getUser() != null ? demande.getUser().getId() : null);
-        dto.setLogin(demande.getUser() != null ? demande.getUser().getLogin() : null);
+        dto.setUserId(getUserId(demande));
 
-        // Set CategorieEnginDTO
-        if (demande.getCategorieEngin() != null) {
-            dto.setCategorieEnginDTO(categorieEnginMapper.toCategorieEnginDto(demande.getCategorieEngin()));
-        }
-
-        // Set UserDTO
-        if (demande.getUser() != null) {
-            dto.setUser(userMapper.toUserDto(demande.getUser()));
-        }
-
-        // Set EnginDTO
-        if (demande.getEngin() != null) {
-            dto.setEnginDto(enginMapper.toEnginDto(demande.getEngin()));
-        }
+        // Remove these lines if not needed
+        // dto.setCategorieEnginDTO(convertToCategorieEnginDto(demande));
+        // dto.setUser(convertToUserDto(demande));
 
         return dto;
+    }
+    private Long getCategorieEnginId(Demande demande) {
+        return demande.getCategorieEngin() != null ? demande.getCategorieEngin().getId() : null;
+    }
+
+    private Long getUserId(Demande demande) {
+        return demande.getUser() != null ? demande.getUser().getId() : null;
+    }
+
+    private String getUserLogin(Demande demande) {
+        return demande.getUser() != null ? demande.getUser().getLogin() : null;
+    }
+
+    private CategorieEnginDTO convertToCategorieEnginDto(Demande demande) {
+        return demande.getCategorieEngin() != null ? categorieEnginMapper.toCategorieEnginDto(demande.getCategorieEngin()) : null;
+    }
+
+    private UserDto convertToUserDto(Demande demande) {
+        return demande.getUser() != null ? userMapper.toUserDto(demande.getUser()) : null;
     }
 
     public Demande toDemande(DemandeDto dto) {
