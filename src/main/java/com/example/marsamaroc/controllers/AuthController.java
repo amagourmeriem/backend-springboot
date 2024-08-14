@@ -2,12 +2,14 @@ package com.example.marsamaroc.controllers;
 
 import com.example.marsamaroc.config.UserAuthenticationProvider;
 import com.example.marsamaroc.dtos.CredentialsDto;
+import com.example.marsamaroc.dtos.RoleDto;
 import com.example.marsamaroc.dtos.SignUpDto;
 import com.example.marsamaroc.dtos.UserDto;
 import com.example.marsamaroc.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -39,6 +41,12 @@ public class AuthController {
         System.out.println("Appel à getUserByLogin avec le login: " + login);
         UserDto userDto = userService.findUserDtoByLogin(login);
         return ResponseEntity.ok(userDto);
+    }
+
+
+    @GetMapping("/api/user/role")
+    public UserDto getUserRole(@RequestParam String login) {
+        return userService.getRoleByLogin(login);
     }
 
 }

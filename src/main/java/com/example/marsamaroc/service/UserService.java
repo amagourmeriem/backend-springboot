@@ -1,6 +1,7 @@
 package com.example.marsamaroc.service;
 
 import com.example.marsamaroc.dao.entities.User;
+import com.example.marsamaroc.dtos.RoleDto;
 import com.example.marsamaroc.dtos.SignUpDto;
 import com.example.marsamaroc.dtos.UserDto;
 import com.example.marsamaroc.exception.AppException;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.marsamaroc.dao.repositories.UserRepository;
@@ -102,5 +104,23 @@ public class UserService {
 
     private UserDto convertToDto(User user) {
         return new UserDto(user.getId(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPassword(), null, user.getRole());
+    }
+
+    public RoleDto getUserRole(String login) {
+        Optional<User> optionalUser = userRepository.findByLogin(login);
+
+        // Vérifiez si l'utilisateur est présent
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            return new RoleDto(user.getRole());
+        } else {
+            throw new UsernameNotFoundException("User not found with login hihi: " + login);
+        }
+    }
+
+    public UserDto getRoleByLogin(String login) {
+        User user = userRepository.findByLogin(login)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with login: " + login));
+        return new UserDto(user.getRole());
     }
 }

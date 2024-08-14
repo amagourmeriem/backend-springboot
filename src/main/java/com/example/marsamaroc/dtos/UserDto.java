@@ -29,4 +29,9 @@ public class UserDto {
         this.password = user.getPassword(); // Correctly set the password
         this.role = user.getRole(); // Correctly set the role
     }
+
+    public UserDto(Role role) {
+        this.role = role;
+
+    }
 }

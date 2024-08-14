@@ -1,17 +1,22 @@
 package com.example.marsamaroc.service;
 
-import com.example.marsamaroc.dao.entities.CategorieEngin;
+import com.example.marsamaroc.dao.entities.*;
+import com.example.marsamaroc.dao.repositories.AffectationRepository;
 import com.example.marsamaroc.dao.repositories.CategoryEnginRepository;
+import com.example.marsamaroc.dao.repositories.DemandeRepository;
 import com.example.marsamaroc.dtos.EnginDto;
-import com.example.marsamaroc.dao.entities.Engin;
 import com.example.marsamaroc.dao.repositories.EnginRepository;
+import com.example.marsamaroc.exception.DateConverter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import com.example.marsamaroc.exception.ResourceNotFoundException;
 
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +25,8 @@ public class EnginService {
 
     private final EnginRepository enginRepository;
     private final CategoryEnginRepository categoryEnginRepository;
+    private  final DemandeRepository demandeRepository;
+    private final AffectationRepository affectationRepository;
 
 
     public EnginDto addEngin(EnginDto enginDto) {
@@ -209,5 +216,58 @@ public class EnginService {
                 .orElseThrow(() -> new RuntimeException("CategorieEngin not found with id " + id));
     }
 
+    public void markEnginAsAvailable(Long enginId) {
+        Engin engin = enginRepository.findById(enginId)
+                .orElseThrow(() -> new ResourceNotFoundException("Engin non trouvé pour ID : " + enginId));
 
-}
+        engin.setStatus(EnginStatus.DISPONIBLE);  // Rendre l'engin disponible
+        enginRepository.save(engin);
+    }
+    @Scheduled(cron = "0 0 0 * * ?")  // Exemple: tâche quotidienne à minuit
+    public void checkAndUpdateEnginStatus() {
+        List<Demande> demandes = demandeRepository.findAll();
+
+        for (Demande demande : demandes) {
+            LocalDate dateSortie = DateConverter.convertToLocalDate(demande.getDateSortie());
+            if (dateSortie.isBefore(LocalDate.now())) {
+                Engin engin = demande.getEngin();
+                engin.setStatus(EnginStatus.DISPONIBLE);
+                enginRepository.save(engin);
+            }
+        }
+    }
+
+    public List<EnginDto> findEnginsDisponibles() {
+        List<Affectation> affectations = affectationRepository.findAll();
+        Set<Long> enginsAffectes = affectations.stream()
+                .map(a -> a.getEngin().getId())
+                .collect(Collectors.toSet());
+
+        return enginRepository.findAll().stream()
+                .filter(e -> !enginsAffectes.contains(e.getId()))
+                .map(e -> new EnginDto(
+                        e.getId(),
+                        e.getCode(),
+                        e.getMatricule(),
+                        e.getCompteurHoraire(),
+                        e.getImage(),
+                        e.getEtatFrein(),
+                        e.getEtatBatterie(),
+                        e.getEtatEclairage(),
+                        e.getEtatEssuieGlace(),
+                        e.getEtatTracteur(),
+                        e.getEtatPneumatique(),
+                        e.getEtatTransmission(),
+                        e.getEtatFreinService(),
+                        e.getEtatFreinParking(),
+                        e.getEtatKlaxon(),
+                        e.getEtatCablage(),
+                        e.getEtatVitesse(),
+                        e.getObservationsGenerales(),
+                        e.getCategorieEngin().getId(),
+                        e.getCategorieEngin().getNom()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    }

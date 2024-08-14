@@ -17,5 +17,6 @@ public interface DemandeRepository extends JpaRepository<Demande, Long> {
     List<Demande> findByUserId(Long userId);
     List<Demande> findByUser(User user);
 
+    List<Demande> findByAffecteFalse();
 }
 

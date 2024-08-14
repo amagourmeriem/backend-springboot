@@ -4,7 +4,10 @@ import com.example.marsamaroc.dao.entities.Demande;
 import com.example.marsamaroc.dao.entities.User;
 import com.example.marsamaroc.dao.repositories.DemandeRepository;
 import com.example.marsamaroc.dao.repositories.UserRepository;
+import com.example.marsamaroc.dtos.AffectationDto;
 import com.example.marsamaroc.dtos.DemandeDto;
+import com.example.marsamaroc.exception.ResourceNotFoundException;
+import com.example.marsamaroc.mappers.StatusUpdateRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -84,6 +87,16 @@ public class DemandeController {
         return demande != null ? new ResponseEntity<>(demande, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    // Endpoint pour obtenir toutes les demandes non affectées
+    @GetMapping("/non-affectees")
+    public ResponseEntity<?> getDemandesNonAffectees() {
+        try {
+            List<DemandeDto> demandesNonAffectees = demandeService.findDemandesNonAffectees();
+            return ResponseEntity.ok(demandesNonAffectees);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erreur lors de la récupération des demandes non affectées");
+        }
+    }
     // Mettre à jour une demande
     @PutMapping("/{id}")
     public ResponseEntity<DemandeDto> updateDemande(@PathVariable("id") Long id, @RequestBody DemandeDto demandeDto) {
@@ -102,4 +115,24 @@ public class DemandeController {
 //        List<DemandeDto> demandes = demandeService.getDemandesByUser(userId);
 //        return ResponseEntity.ok(demandes);
 //    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<?> updateDemandeStatus(@PathVariable Long id, @RequestBody StatusUpdateRequest statusUpdateRequest) {
+        try {
+            // Appel du service pour mettre à jour le statut
+            demandeService.updateStatus(id, statusUpdateRequest.getStatus());
+            return ResponseEntity.ok().build();
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+
+    @PatchMapping("/{id}/affectation")
+    public ResponseEntity<Void> updateAffectation(@PathVariable Long id, @RequestBody AffectationDto affectationDto) {
+        demandeService.updateAffectation(id, affectationDto);
+        return ResponseEntity.noContent().build();
+    }
 }

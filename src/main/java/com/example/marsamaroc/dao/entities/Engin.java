@@ -71,6 +71,9 @@ public class Engin {
     @Column(name = "image")
     private String image;
 
+    @Enumerated(EnumType.STRING)
+    private EnginStatus status;  // Nouveau champ pour l'état de l'engin
+
 
     @Override
     public String toString() {
@@ -94,12 +97,17 @@ public class Engin {
                 ", observationsGenerales='" + observationsGenerales + '\'' +
                 ", image='" + image + '\'' +
                 ", categorieEngin=" + categorieEngin +
+                ", affectations=" + affectations +
                 '}';
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categorie_engin_id")
     private CategorieEngin categorieEngin;
+
+
+    @OneToMany(mappedBy = "engin", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Affectation> affectations;
 
     @OneToOne(mappedBy = "engin", cascade = CascadeType.ALL, orphanRemoval = true)
     private Demande demande;

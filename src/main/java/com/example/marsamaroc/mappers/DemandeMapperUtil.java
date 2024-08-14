@@ -67,7 +67,6 @@ public class DemandeMapperUtil {
     private Long getCategorieEnginId(Demande demande) {
         return demande.getCategorieEngin() != null ? demande.getCategorieEngin().getId() : null;
     }
-
     private Long getUserId(Demande demande) {
         return demande.getUser() != null ? demande.getUser().getId() : null;
     }

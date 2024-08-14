@@ -39,6 +39,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/demandes/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/demandes/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/demandes/**").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/demandes/**").authenticated()
                         .anyRequest().authenticated()
                 );
         return http.build();

@@ -57,5 +57,13 @@ public class Demande {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status= Status.PENDING;
+
+    @OneToOne(mappedBy = "demande")
+    private Affectation affectation;
+
+    private boolean affecte;
+
+
+
 }
 

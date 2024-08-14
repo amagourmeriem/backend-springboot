@@ -1,5 +1,6 @@
 package com.example.marsamaroc.controllers;
 
+import com.example.marsamaroc.dao.entities.Engin;
 import com.example.marsamaroc.dtos.EnginDto;
 import com.example.marsamaroc.service.EnginService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -190,5 +191,11 @@ public class EnginController {
         } catch (MalformedURLException e) {
             throw new RuntimeException("Error: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/disponibles")
+    public ResponseEntity<List<EnginDto>> getEnginsDisponibles() {
+        List<EnginDto> enginsDisponibles = enginService.findEnginsDisponibles();
+        return ResponseEntity.ok(enginsDisponibles);
     }
 }
